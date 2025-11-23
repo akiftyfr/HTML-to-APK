@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asit Geri Dönüşüm Hesaplayıcı</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #2980b9;
+            color: white;
+        }
+        /* Giriş kutusu stili */
+        input[type="number"] {
+            width: 90%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        /* Sonuç metni stili */
+        .result {
+            font-weight: bold;
+            color: #27ae60;
+        }
+        /* Hesaplama yapılmayan satırın sonucu */
+        .no-calc {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        /* Buton Stili */
+        .btn-share {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #e67e22;
+            color: white;
+            text-align: center;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-share:active {
+            background-color: #d35400;
+        }
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="captureArea">
+    <h2>Asit Ölçüm Tablosu</h2>
+    <p style="text-align:center; font-size:0.9em; color:#666;">Değerleri giriniz.</p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Birim Adı</th>
+                <th>Giriş</th>
+                <th>Sonuç</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Fan</strong></td>
+                <td><input type="number" id="val_fan" placeholder="Değer..." oninput="hesapla()"></td>
+                <td><span id="res_fan" class="result">0.00</span></td>
+            </tr>
+            
+            <tr>
+                <td><strong>Eşanjör</strong></td>
+                <td><input type="number" id="val_esanjor" placeholder="Değer..." oninput="hesapla()"></td>
+                <td><span id="res_esanjor" class="result">0.00</span></td>
+            </tr>
+
+            <tr>
+                <td><strong>Rejenere</strong></td>
+                <td><input type="number" id="val_rejenere" placeholder="Değer..." oninput="hesapla()"></td>
+                <td><span id="res_rejenere" class="result">0.00</span></td>
+            </tr>
+
+            <tr>
+                <td><strong>Asit</strong></td>
+                <td><input type="number" id="val_asit" placeholder="Değer..." oninput="hesapla()"></td>
+                <td><span id="res_asit" class="result">0.00</span></td>
+            </tr>
+
+            <tr>
+                <td><strong>Demir</strong></td>
+                <td><input type="number" id="val_demir" placeholder="Değer..." oninput="hesapla()"></td>
+                <td><span id="res_demir" class="result">0.00</span></td>
+            </tr>
+
+             <tr>
+                <td><strong>Yoğunluk</strong></td>
+                <td><input type="number" id="val_yogunluk" placeholder="Değer..." ></td>
+                <td><span class="no-calc">-</span></td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="footer">Tarih: <span id="dateDisplay"></span></div>
+</div>
+
+<br>
+<button class="btn-share" onclick="paylas()">📸 Tabloyu Resim Olarak Paylaş</button>
+
+<script>
+    // Tarihi ayarla
+    document.getElementById('dateDisplay').innerText = new Date().toLocaleDateString('tr-TR');
+
+    function hesapla() {
+        // Değerleri al
+        let fan = parseFloat(document.getElementById('val_fan').value) || 0;
+        let esanjor = parseFloat(document.getElementById('val_esanjor').value) || 0;
+        let rejenere = parseFloat(document.getElementById('val_rejenere').value) || 0;
+        let asit = parseFloat(document.getElementById('val_asit').value) || 0;
+        let demir = parseFloat(document.getElementById('val_demir').value) || 0;
+
+        // Hesaplamalar
+        let resFan = (fan * 0.365) / 20;
+        let resEsanjor = esanjor * 0.365;
+        let resRejenere = rejenere * 3.65;
+        let resAsit = asit * 0.365;
+        let resDemir = demir * 5.6;
+
+        // Sonuçları Yazdır
+        document.getElementById('res_fan').innerText = resFan.toFixed(4); 
+        document.getElementById('res_esanjor').innerText = resEsanjor.toFixed(2);
+        document.getElementById('res_rejenere').innerText = resRejenere.toFixed(2);
+        document.getElementById('res_asit').innerText = resAsit.toFixed(2);
+        document.getElementById('res_demir').innerText = resDemir.toFixed(2);
+        // Yoğunluk satırı hesaplama yapmaz, olduğu gibi kalır.
+    }
+
+    function paylas() {
+        const captureElement = document.getElementById('captureArea');
+
+        html2canvas(captureElement).then(canvas => {
+            canvas.toBlob(blob => {
+                if (navigator.share) {
+                    const file = new File([blob], "asit_olcum_sonucu.png", { type: "image/png" });
+                    navigator.share({
+                        title: 'Asit Ölçüm Sonuçları',
+                        text: 'Güncel ölçüm değerleri.',
+                        files: [file]
+                    }).catch(console.error);
+                } else {
+                    const link = document.createElement('a');
+                    link.download = 'asit_olcum.png';
+                    link.href = canvas.toDataURL();
+                    link.click();
+                }
+            });
+        });
+    }
+</script>
+
+</body>
+</html>
